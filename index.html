@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Режим на поддръжка • Скоро се връщаме</title>
+  <meta name="description" content="Лека статична страница за поддръжка, оптимизирана за Cloudflare Pages. Анимации с предпочитание за ниско движение." />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Ctext y='1em' font-size='96'%3E%F0%9F%9A%A7%3C/text%3E%3C/svg%3E" />
+  <style>
+    /* --- Design tokens --- */
+    :root{
+      --bg: #0b1020;            /* dark base */
+      --fg: #eaf0ff;            /* text on dark */
+      --muted: #b5c2ffcc;       /* secondary text */
+      --brand: #7aa2ff;         /* primary accent */
+      --brand-2: #a6ffcb;       /* secondary accent */
+      --card-bg: color-mix(in oklab, var(--bg), white 6%);
+      --shadow: 0 8px 28px rgba(0,0,0,.35);
+      --radius: 16px;
+    }
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg: #f6f8ff;
+        --fg: #0c1330;
+        --muted: #334170cc;
+        --card-bg: color-mix(in oklab, var(--bg), black 4%);
+        --shadow: 0 10px 30px rgba(8, 18, 64, .12);
+      }
+    }
+
+    /* --- Page reset --- */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      color:var(--fg); background:var(--bg); overflow:hidden;
+      display:grid; place-items:center;
+    }
+
+    /* --- Animated background (morphing blob + soft gradient) --- */
+    .scene{position:fixed; inset:0; z-index:-1; overflow:hidden}
+    .gradient{position:absolute; inset:-20%; filter: blur(60px); opacity:.55}
+    .gradient::before, .gradient::after{
+      content:""; position:absolute; width:60vmax; height:60vmax; border-radius:50%;
+      background: radial-gradient(closest-side, var(--brand), transparent 60%);
+      animation: float 18s ease-in-out infinite alternate;
+    }
+    .gradient::after{background: radial-gradient(closest-side, var(--brand-2), transparent 60%); left: 40%; top: -10%; animation-duration: 22s}
+    @keyframes float{from{transform:translate(-10%, 5%) scale(1)} to{transform:translate(15%, -5%) scale(1.1)}}
+
+    /* SVG blob (morphing) */
+    .blob{position:absolute; inset:0; opacity:.18; mix-blend-mode:screen}
+    svg{width:120vmax; height:120vmax; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%)}
+    .blob path{fill:url(#g1)}
+
+    /* --- Card --- */
+    .card{
+      width:min(720px, calc(100% - 32px));
+      background: color-mix(in oklab, var(--card-bg), transparent 10%);
+      backdrop-filter: saturate(130%) blur(10px);
+      -webkit-backdrop-filter: saturate(130%) blur(10px);
+      border:1px solid color-mix(in oklab, var(--fg), transparent 92%);
+      border-radius:var(--radius); box-shadow:var(--shadow);
+      padding: clamp(18px, 4vw, 28px);
+      transform: translateZ(0);
+    }
+    .head{display:flex; gap:14px; align-items:center; margin-bottom:10px}
+    .logo{width:44px; height:44px; flex:0 0 auto; border-radius:12px; display:grid; place-items:center;
+          background: linear-gradient(135deg, var(--brand), var(--brand-2)); color:#0b0f1a;}
+    h1{font-size: clamp(22px, 3.2vw, 28px); margin:0}
+    p{margin:.2em 0; color:var(--muted)}
+
+    .bar{margin-top:18px; height:6px; border-radius:999px; background:linear-gradient(90deg, var(--brand), var(--brand-2));
+         width:40%; min-width:160px; animation: load 2.4s ease-in-out infinite alternate}
+    @keyframes load{to{transform: translateX(150%)} }
+
+    .actions{display:flex; gap:12px; flex-wrap:wrap; margin-top:18px}
+    .btn{appearance:none; border:none; cursor:pointer; font-weight:600; letter-spacing:.2px; padding:.75em 1.05em;
+         border-radius:12px; transition: transform .15s ease, box-shadow .15s ease, background .2s ease;}
+    .btn.primary{background:linear-gradient(135deg, var(--brand), var(--brand-2)); color:#0b0f1a;}
+    .btn.secondary{background:transparent; color:var(--fg); border:1px solid color-mix(in oklab, var(--fg), transparent 85%)}
+    .btn:active{transform:translateY(1px)}
+
+    .meta{margin-top:14px; font-size:.92rem; opacity:.9}
+
+    .grid{display:grid; grid-template-columns:1fr; gap:12px; margin-top:14px}
+    .chip{padding:.45em .7em; border-radius:10px; border:1px dashed color-mix(in oklab, var(--fg), transparent 85%);
+          width:max-content; opacity:.9}
+    @media (min-width:720px){ .grid{grid-template-columns:auto 1fr} }
+
+    /* Accessibility: reduce motion */
+    @media (prefers-reduced-motion: reduce){
+      .gradient, .bar{animation:none}
+      .blob{display:none}
+    }
+  </style>
+</head>
+<body>
+  <!-- Soft animated background -->
+  <div class="scene" aria-hidden="true">
+    <div class="gradient"></div>
+    <div class="blob">
+      <svg viewBox="0 0 800 800" role="img" aria-label="decorative blob">
+        <defs>
+          <radialGradient id="g1" cx="50%" cy="50%" r="70%">
+            <stop offset="0%" stop-color="var(--brand)"/>
+            <stop offset="100%" stop-color="var(--brand-2)"/>
+          </radialGradient>
+        </defs>
+        <path>
+          <animate attributeName="d" dur="18s" repeatCount="indefinite"
+            values="M475,104Q563,158,592.5,250Q622,342,576,432.5Q530,523,433,575Q336,627,238.5,588Q141,549,102.5,451Q64,353,103.5,256Q143,159,233,104Q323,49,417,68.5Q511,88,475,104Z;
+                    M485,134Q563,188,593.5,272Q624,356,574,438Q524,520,431.5,575Q339,630,242.5,593Q146,556,106.5,458.5Q67,361,101,262.5Q135,164,232.5,121Q330,78,425,94.5Q520,111,485,134Z;
+                    M475,104Q563,158,592.5,250Q622,342,576,432.5Q530,523,433,575Q336,627,238.5,588Q141,549,102.5,451Q64,353,103.5,256Q143,159,233,104Q323,49,417,68.5Q511,88,475,104Z" />
+        </path>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Content card -->
+  <main class="card" role="main" aria-live="polite">
+    <div class="head">
+      <div class="logo" aria-hidden="true">
+        <!-- Cloud + wrench icon -->
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7 18a4 4 0 0 1 0-8 5 5 0 0 1 9.7-1.8A3.5 3.5 0 1 1 18 18H7Z" fill="currentColor"/>
+          <path d="M21 21l-3-3m-2 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" stroke="#0b0f1a" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <h1>Режим на поддръжка</h1>
+        <p>Работим по подобрения и оптимизации. Сайтът ще се върне онлайн съвсем скоро.</p>
+      </div>
+    </div>
+
+    <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Напредък"></div>
+
+    <div class="grid">
+      <span class="chip">ETA: под 1 час</span>
+      <p class="meta">Ако виждате тази страница продължително, вероятно извършваме планирана актуализация или кратко отстраняване на проблем.
+      </p>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" id="retry">Опитай отново</button>
+      <a class="btn secondary" href="/" id="home">Начало</a>
+      <a class="btn secondary" href="/status" id="status">Статус</a>
+    </div>
+
+    <p class="meta" id="tick">Автоматично опресняване след <strong>30</strong> сек.</p>
+
+    <noscript>
+      <p class="meta">JavaScript е изключен. Натиснете „Опитай отново" за ръчно презареждане.</p>
+    </noscript>
+  </main>
+
+  <script>
+    // Много лек JS: обратно броене + презареждане
+    (function(){
+      const retryBtn = document.getElementById('retry');
+      const tick = document.getElementById('tick').querySelector('strong');
+      let t = 30; // секунди
+
+      function reload(){ location.reload(); }
+      retryBtn.addEventListener('click', reload);
+
+      const timer = setInterval(()=>{
+        t--; tick.textContent = t;
+        if(t <= 0){ clearInterval(timer); reload(); }
+      }, 1000);
+
+      // Ако потребителят се върне във фокуса след >30s, опитай веднага
+      document.addEventListener('visibilitychange', ()=>{
+        if(!document.hidden && t < 5){ t = 1; }
+      });
+    })();
+  </script>
+</body>
+</html>
