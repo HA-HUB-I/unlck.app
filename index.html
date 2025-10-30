@@ -6,28 +6,32 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Режим на поддръжка • Скоро се връщаме</title>
   <meta name="description" content="Лека статична страница за поддръжка, оптимизирана за Cloudflare Pages. Анимации с предпочитание за ниско движение." />
-  <meta name="color-scheme" content="light dark" />
+  <meta name="color-scheme" content="dark light" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Ctext y='1em' font-size='96'%3E%F0%9F%9A%A7%3C/text%3E%3C/svg%3E" />
   <style>
     /* --- Design tokens --- */
+    /* По подразбиране: тъмна тема. Светлата тема се активира ако браузърът я предпочита */
     :root{
-      --bg: #0b1020;            /* dark base */
-      --fg: #eaf0ff;            /* text on dark */
-      --muted: #b5c2ffcc;       /* secondary text */
+      --bg: #0b1020;            /* тъмна основа */
+      --fg: #ffffff;            /* бял текст на тъмно */
+      --muted: #a0a9c0;         /* secondary текст */
       --brand: #7aa2ff;         /* primary accent */
       --brand-2: #a6ffcb;       /* secondary accent */
-      --card-bg: color-mix(in oklab, var(--bg), white 6%);
+      --card-bg: #1a2332;       /* solid dark card background */
       --shadow: 0 8px 28px rgba(0,0,0,.35);
       --radius: 16px;
     }
     @media (prefers-color-scheme: light){
       :root{
-        --bg: #f6f8ff;
-        --fg: #0c1330;
-        --muted: #334170cc;
-        --card-bg: color-mix(in oklab, var(--bg), black 4%);
+        --bg: #f0f4ff;           /* светло сив-син фон */
+        --fg: #1a2332;           /* тъмен текст */
+        --muted: #4a5568;        /* по-тъмен secondary текст */
+        --card-bg: #ffffff;      /* бял фон за картата */
         --shadow: 0 10px 30px rgba(8, 18, 64, .12);
       }
+      .btn.secondary{background:rgba(0,0,0,0.05); border:1px solid rgba(0,0,0,0.15)}
+      .chip{border:1px dashed rgba(0,0,0,0.2); background: rgba(0,0,0,0.03)}
+      .logo{color:#ffffff !important;} /* задържаме белия цвят за лого-то */
     }
 
     /* --- Page reset --- */
@@ -61,18 +65,18 @@
     /* --- Card --- */
     .card{
       width:min(720px, calc(100% - 32px));
-      background: color-mix(in oklab, var(--card-bg), transparent 10%);
-      backdrop-filter: saturate(130%) blur(10px);
-      -webkit-backdrop-filter: saturate(130%) blur(10px);
-      border:1px solid color-mix(in oklab, var(--fg), transparent 92%);
-      border-radius:var(--radius); box-shadow:var(--shadow);
+      background: var(--card-bg);
+      border:1px solid rgba(255,255,255,0.1);
+      border-radius:var(--radius); 
+      box-shadow:var(--shadow);
       padding: clamp(18px, 4vw, 28px);
       transform: translateZ(0);
-      position: relative; z-index: 10;
+      position: relative; 
+      z-index: 10;
     }
     .head{display:flex; gap:14px; align-items:flex-start; margin-bottom:10px; flex-wrap:wrap}
     .logo{width:44px; height:44px; flex:0 0 auto; border-radius:12px; display:grid; place-items:center;
-          background: linear-gradient(135deg, var(--brand), var(--brand-2)); color:#0b0f1a;}
+          background: linear-gradient(135deg, var(--brand), var(--brand-2)); color:#ffffff;}
     @media (max-width: 480px) {
       .head{align-items:center; gap:12px}
       .logo{width:40px; height:40px}
@@ -87,16 +91,18 @@
 
     .actions{display:flex; gap:12px; flex-wrap:wrap; margin-top:18px}
     .btn{appearance:none; border:none; cursor:pointer; font-weight:600; letter-spacing:.2px; padding:.75em 1.05em;
-         border-radius:12px; transition: transform .15s ease, box-shadow .15s ease, background .2s ease;}
-    .btn.primary{background:linear-gradient(135deg, var(--brand), var(--brand-2)); color:#0b0f1a;}
-    .btn.secondary{background:transparent; color:var(--fg); border:1px solid color-mix(in oklab, var(--fg), transparent 85%)}
+         border-radius:12px; transition: transform .15s ease, box-shadow .15s ease, background .2s ease;
+         text-decoration: none; display: inline-block;}
+    .btn.primary{background:linear-gradient(135deg, var(--brand), var(--brand-2)); color:#ffffff;}
+    .btn.secondary{background:rgba(255,255,255,0.05); color:var(--fg); border:1px solid rgba(255,255,255,0.2)}
+    .btn:hover{transform:translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.2)}
     .btn:active{transform:translateY(1px)}
 
     .meta{margin-top:14px; font-size:.92rem; opacity:.9}
 
     .grid{display:grid; grid-template-columns:1fr; gap:12px; margin-top:14px}
-    .chip{padding:.45em .7em; border-radius:10px; border:1px dashed color-mix(in oklab, var(--fg), transparent 85%);
-          width:max-content; opacity:.9}
+    .chip{padding:.45em .7em; border-radius:10px; border:1px dashed rgba(255,255,255,0.2);
+          width:max-content; opacity:.9; background: rgba(255,255,255,0.02)}
     @media (min-width:720px){ .grid{grid-template-columns:auto 1fr} }
 
     /* Accessibility: reduce motion */
